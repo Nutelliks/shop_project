@@ -4,7 +4,9 @@ from django.core.paginator import Paginator
 from .models import Products, Categories
 
 
-def catalog(request, category_slug, page=1):
+def catalog(request, category_slug):
+
+    page = request.GET.get('page', 1)
 
     if category_slug == 'all':
         goods = Products.objects.all()
