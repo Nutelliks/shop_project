@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from .forms import UserLoginForm, UserRegistrationForm
+from .forms import UserLoginForm, UserRegistrationForm, ProfileForm
 
 def login(request):
     if request.method == 'POST':
@@ -50,8 +50,18 @@ def registration(request):
 
 
 def profile(request):
+    if request.method == "POST":
+        form = ProfileForm(data=request.POST, instance=request.user, files=request.FILES)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('user:profile'))
+    else:
+        form = ProfileForm(instance=request.user)
+
+
     context = {
-        'title': 'Home - Profile'
+        'title': 'Home - Profile',
+        'form': form
     }
 
     return render(request, 'users/profile.html', context)
