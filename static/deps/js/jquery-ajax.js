@@ -170,7 +170,6 @@ $(document).ready(function () {
                 // Меняем содержимое корзины
                 var cartItemsContainer = $("#cart-items-container");
                 cartItemsContainer.html(data.cart_items_html);
-
             },
             error: function (data) {
                 console.log("Ошибка при добавлении товара в корзину");
