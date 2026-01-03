@@ -70,7 +70,6 @@ $(document).ready(function () {
 
         // делаем post запрос через ajax не перезагружая страницу
         $.ajax({
-
             type: "POST",
             url: remove_from_cart,
             data: {
@@ -188,7 +187,7 @@ $(document).ready(function () {
         }, 7000);
     }
 
-    
+
     // При клике по значку корзины открываем всплывающее(модальное) окно
     $('#modalButton').click(function () {
         $('#exampleModal').appendTo('body');
