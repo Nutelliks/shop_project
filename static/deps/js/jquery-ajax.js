@@ -188,6 +188,7 @@ $(document).ready(function () {
         }, 7000);
     }
 
+    
     // При клике по значку корзины открываем всплывающее(модальное) окно
     $('#modalButton').click(function () {
         $('#exampleModal').appendTo('body');
