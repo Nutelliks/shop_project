@@ -7,6 +7,8 @@ from django.urls import reverse
 
 from .forms import UserLoginForm, UserRegistrationForm, ProfileForm
 
+from carts.models import Cart
+
 def login(request):
     if request.method == 'POST':
         form = UserLoginForm(data=request.POST)
@@ -14,9 +16,15 @@ def login(request):
             username = request.POST['username']
             password = request.POST['password']
             user = auth.authenticate(username=username, password=password)
+
+            session_key = request.session.session_key
+
             if user:
                 auth.login(request, user)
                 messages.success(request, f"{username}, Вы вошли в аккаунт!")
+
+                if session_key:
+                    Cart.objects.filter(session_key=session_key).update(user=user)
 
                 redirect_page = request.POST.get('next', None)
                 if redirect_page and redirect_page != reverse('user:logout'):
@@ -39,10 +47,17 @@ def registration(request):
     if request.method == "POST":
         form = UserRegistrationForm(data=request.POST)
         if form.is_valid():
+
+            session_key = request.session.session_key
+
             form.save()
             user = form.instance
             auth.login(request, user)
             messages.success(request, f"{request.user.username}, Вы успешно зарегистрировались и вошли в аккаунт!")
+
+            if session_key:
+                Cart.objects.filter(session_key=session_key).update(user=user)
+
             return HttpResponseRedirect(reverse("main:index"))
     else:
         form = UserRegistrationForm()
