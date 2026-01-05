@@ -19,7 +19,7 @@ class Order(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.SET_DEFAULT, blank=True, null=True, verbose_name="User", default=None)
     created_timestamp = models.DateTimeField(auto_now_add=True, verbose_name="Data added")
     phone_number = models.CharField(max_length=20, verbose_name="Phone number")
-    require_delivery = models.BooleanField(default=False, verbose_name="Require delivery")
+    requires_delivery = models.BooleanField(default=False, verbose_name="Requires delivery")
     delivery_address = models.TextField(null=True, blank=True, verbose_name="Delivery address")
     payment_on_get = models.BooleanField(default=False, verbose_name="Payment on get")
     is_paid = models.BooleanField(default=False, verbose_name="Paid")
@@ -27,12 +27,11 @@ class Order(models.Model):
 
     class Meta:
         db_table = 'order'
-        managed = True 
         verbose_name = 'Order' 
         verbose_name_plural = 'Orders'
 
     def __str__(self):
-        return self.name
+        return super().__str__()
     
 
 
