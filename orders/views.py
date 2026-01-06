@@ -3,6 +3,7 @@ from django.db import transaction
 from django.forms import ValidationError
 from django.contrib import messages
 from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
 
 from .models import Order, OrderItem
 from .forms import CreateOrderForm
@@ -10,7 +11,7 @@ from .forms import CreateOrderForm
 from carts.models import Cart
 
 
-
+@login_required
 def create_order(request):
     if request.method == "POST":
         form = CreateOrderForm(data=request.POST)
@@ -72,6 +73,7 @@ def create_order(request):
     context = {
         'title': 'Home - Order',
         'form': form,
+        'order': True,
     }
 
 
