@@ -1,5 +1,6 @@
-from django.shortcuts import render, get_list_or_404
 from django.core.paginator import Paginator
+from django.http import Http404
+from django.shortcuts import render
 
 from .models import Products, Categories
 from .utils import q_search
@@ -16,7 +17,10 @@ def catalog(request, category_slug=None):
     elif query:
         goods = q_search(query)
     else:
-        goods = get_list_or_404(Products.objects.filter(category__slug=category_slug))
+        goods = Products.objects.filter(category__slug=category_slug)
+
+        if not goods.exists():
+            raise Http404()
 
     if on_sale:
         goods = goods.filter(discount__gt=0)

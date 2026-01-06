@@ -23,3 +23,7 @@ class CartAdmin(admin.ModelAdmin):
         if obj.user:
             return str(obj.user)
         return "Анонимный пользователь"
+    
+    # user_display and product_display alter name of columns in admin panel
+    user_display.short_description = "User"
+    product_display.short_description = "Product"

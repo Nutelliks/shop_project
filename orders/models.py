@@ -29,6 +29,7 @@ class Order(models.Model):
         db_table = 'order'
         verbose_name = 'Order' 
         verbose_name_plural = 'Orders'
+        ordering = ('id', )
 
     def __str__(self):
         return super().__str__()
@@ -48,6 +49,7 @@ class OrderItem(models.Model):
         db_table = 'order_item'
         verbose_name = 'Order Item'
         verbose_name_plural = 'Order Items'
+        ordering = ('id', )
 
     objects = OrderItemQuerySet.as_manager()
 
