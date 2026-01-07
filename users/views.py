@@ -104,7 +104,8 @@ def profile(request):
 
     context = {
         'title': 'Home - Profile',
-        'form': form
+        'form': form,
+        'orders': orders
     }
 
     return render(request, 'users/profile.html', context)
