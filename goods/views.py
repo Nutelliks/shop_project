@@ -23,7 +23,7 @@ class CatalogView(ListView):
         query = self.request.GET.get('q')
 
         if category_slug == 'all':
-            goods = super().get_query_set()
+            goods = super().get_queryset()
         elif query:
             goods = q_search(query)
         else:
