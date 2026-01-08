@@ -10,12 +10,14 @@ from django.db.models import Prefetch
 from django.contrib.auth.views import LoginView
 from django.views.generic import CreateView, UpdateView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.cache import cache
 
 from .forms import UserLoginForm, UserRegistrationForm, ProfileForm
 from .models import User
 
 from carts.models import Cart
 from orders.models import Order, OrderItem
+from common.mixins import CacheMixin
 
 
 class UserLoginView(LoginView):
@@ -86,7 +88,7 @@ class UserRegistrationView(CreateView):
     
 
 
-class UserProfileView(LoginRequiredMixin, UpdateView):
+class UserProfileView(LoginRequiredMixin, CacheMixin, UpdateView):
     model = User
     template_name = 'users/profile.html'
     form_class = ProfileForm
@@ -101,6 +103,10 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
     
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["title"] = "Home - Profile"
+    
+
         orders = (
         Order.objects.filter(user=self.request.user)
         .prefetch_related(
@@ -112,9 +118,7 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
             .order_by("-id")
         )
 
-        context = super().get_context_data(**kwargs)
-        context["title"] = "Home - Profile"
-        context["orders"] = orders
+        context["orders"] = self.set_get_cache(orders, f"user_{self.request.user.id}_orders", 60 * 2)
         return context
     
 
