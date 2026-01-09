@@ -1,6 +1,7 @@
 #python stuff
 venv/
 .pylintrc
+.env
 __pycache__/
 cache/
 
