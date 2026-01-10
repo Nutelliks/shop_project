@@ -21,7 +21,7 @@ class CartAddView(CartMixin, View):
             cart.quantity += 1
             cart.save()
         else:
-            Cart.objects.create(user=request.user if request.user else None,
+            Cart.objects.create(user=request.user if request.user.is_authenticated else None,
                                 session_key=request.session.session_key if not request.user.is_authenticated else None,  
                                 product=product, quantity=1)
         

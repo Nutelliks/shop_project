@@ -34,6 +34,16 @@ class ContactView(TemplateView):
         return context
     
 
+class DeliveryView(TemplateView):
+    template_name = 'main/delivery_info.html'
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["title"] = "Home - Delivery info"
+        context["content"] = "Доставка и оплата"
+        return context
+
+
 # def index(request):
 
 #     context = {
