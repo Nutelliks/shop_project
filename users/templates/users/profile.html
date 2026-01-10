@@ -142,6 +142,41 @@
                 </div>
             </div>
             </div>
+            <div class="text-center my-3">
+                <div class="btn-group" role="group" aria-label="Параметры аккаунта">
+                    <a href="{% url "users:change_password" %}" class="btn btn-dark btn-lg rounded-pill d-inline-flex align-items-center shadow-sm me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Изменить пароль">
+                        <img src="{% static 'deps/icons/box-arrow-in-right.svg' %}" alt="" width="18" height="18" class="me-2">
+                        Изменить пароль
+                    </a>
+
+                    <button type="button" class="btn btn-danger btn-lg rounded-pill d-inline-flex align-items-center shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteAccountModal" data-bs-placement="top" title="Удалить аккаунт">
+                        <img src="{% static 'deps/icons/trash3-fill.svg' %}" alt="" width="18" height="18" class="me-2">
+                        Удалить аккаунт
+                    </button>
+                </div>
+                {% comment %} <!-- Modal: подтверждение удаления --> {% endcomment %}
+                <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteAccountModalLabel">Удалить аккаунт</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="mb-0">Вы уверены, что хотите удалить аккаунт? Все данные будут безвозвратно удалены.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                {% comment %} <!--
+                                    TODO: замените обработчик ниже на реальную отправку формы/запрос на сервер, например:
+                                    <form action="{% url 'users:delete_account' %}" method="post">...{% csrf_token %}...
+                                --> {% endcomment %}
+                                <button type="button" id="confirmDeleteAccountBtn" class="btn btn-danger">Удалить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

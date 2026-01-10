@@ -7,12 +7,12 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.db.models import Prefetch
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.views.generic import CreateView, UpdateView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.cache import cache
 
-from .forms import UserLoginForm, UserRegistrationForm, ProfileForm
+from .forms import UserLoginForm, UserRegistrationForm, ProfileForm, UserPasswordChangeForm
 from .models import User
 
 from carts.models import Cart
@@ -28,7 +28,8 @@ class UserLoginView(LoginView):
 
     def get_success_url(self):
         redirect_page = self.request.POST.get('next', None)
-        if redirect_page and redirect_page != reverse('user:logout'):
+        not_allowed_pages = [reverse('user:logout'), reverse('user:change_password'),]
+        if redirect_page and redirect_page not in not_allowed_pages :
             return redirect_page
         return reverse_lazy('main:index')
         
@@ -130,6 +131,23 @@ class UsersCartView(TemplateView):
         context["title"] = "Home - Корзина"
         return context
     
+
+
+class UserPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
+    template_name = 'users/password_change.html'
+    form_class = UserPasswordChangeForm
+    success_url = reverse_lazy('users:profile')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Пароль успешно изменен!')
+        return super().form_valid(form)
+    
+
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["title"] = "Home - Смена пароля"
+        return context
 
 
 

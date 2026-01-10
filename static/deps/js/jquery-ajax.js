@@ -233,3 +233,25 @@ $(document).ready(function () {
         }
     });
 });
+
+
+//  // Инициализация подсказок Bootstrap
+//                     document.addEventListener('DOMContentLoaded', function () {
+//                         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+//                         tooltipTriggerList.map(function (tooltipTriggerEl) {
+//                             return new bootstrap.Tooltip(tooltipTriggerEl);
+//                         });
+
+//                         // Обработчик подтверждения удаления — пока что показывает предупреждение.
+//                         var confirmBtn = document.getElementById('confirmDeleteAccountBtn');
+//                         if (confirmBtn) {
+//                             confirmBtn.addEventListener('click', function () {
+//                                 // Здесь можно реализовать отправку POST-запроса на сервер для удаления аккаунта
+//                                 // Для безопасности мы не выполняем удаление по умолчанию.
+//                                 alert('Функция удаления аккаунта ещё не реализована. Реализуйте серверный обработчик и замените этот обработчик.');
+//                                 var modalEl = document.getElementById('deleteAccountModal');
+//                                 var modal = bootstrap.Modal.getInstance(modalEl);
+//                                 if (modal) modal.hide();
+//                             });
+//                         }
+//                     });
