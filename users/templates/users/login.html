@@ -24,8 +24,14 @@
                         </div>
                         <div class="mb-3">
                             <label for="id_password" class="form-label">Пароль</label>
-                            <input type="password" class="form-control" name="password" id="id_password"
-                            placeholder="Введите ваш пароль" required>
+                            <div class="input-group">
+                                <input type="password" class="form-control" name="password" id="id_password"
+                                placeholder="Введите ваш пароль" required>
+                                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#id_password" aria-label="Показать/скрыть пароль">
+                                    <img src="{% static 'deps/icons/eye.svg' %}" class="icon-show" width="16" height="16" alt="Показать">
+                                    <img src="{% static 'deps/icons/eye-slash.svg' %}" class="icon-hide d-none" width="16" height="16" alt="Скрыть">
+                                </button>
+                            </div>
                         </div>
                         
                         
