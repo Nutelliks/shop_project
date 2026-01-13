@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.db.models import Prefetch
-from django.contrib.auth.views import LoginView, PasswordChangeView
+from django.contrib.auth.views import LoginView, PasswordChangeView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView
 from django.views.generic import CreateView, UpdateView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.cache import cache
@@ -19,6 +19,11 @@ from carts.models import Cart
 from orders.models import Order, OrderItem
 from common.mixins import CacheMixin
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 
 class UserLoginView(LoginView):
     template_name = 'users/login.html'
@@ -28,7 +33,7 @@ class UserLoginView(LoginView):
 
     def get_success_url(self):
         redirect_page = self.request.POST.get('next', None)
-        not_allowed_pages = [reverse('user:logout'), reverse('user:change_password'),]
+        not_allowed_pages = [reverse('user:logout'), reverse('user:password_change'),]
         if redirect_page and redirect_page not in not_allowed_pages :
             return redirect_page
         return reverse_lazy('main:index')
@@ -134,20 +139,49 @@ class UsersCartView(TemplateView):
 
 
 class UserPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
-    template_name = 'users/password_change.html'
+    template_name = 'users/password/password_change.html'
     form_class = UserPasswordChangeForm
     success_url = reverse_lazy('users:profile')
 
     def form_valid(self, form):
         messages.success(self.request, 'Пароль успешно изменен!')
         return super().form_valid(form)
-    
 
+    
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context["title"] = "Home - Смена пароля"
         return context
+    
+
+
+class UserPasswordResetView(PasswordResetView):
+    template_name = 'users/password/password_reset.html'
+    email_template_name = 'users/password/password_reset_email.html'
+    success_url = reverse_lazy('users:password_reset_done')
+
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["title"] = "Home - Восстановление пароля"
+        return context
+    
+    
+
+class UserPasswordResetDoneView(PasswordResetDoneView):
+    template_name = "users/password/password_reset_done.html"
+
+
+
+class UserPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'users/password/password_reset_confirm.html'
+    success_url = reverse_lazy('users:login')
+
+    def get_success_url(self):
+        messages.success(self.request, 'Пароль успешно изменен')
+        return super().get_success_url()
+    
 
 
 
