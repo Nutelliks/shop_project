@@ -1,6 +1,7 @@
 from django.urls import path
 
 from . import views
+from .api import views as api_views
 from .api.routers import router
 
 
@@ -19,6 +20,9 @@ urlpatterns = [
     # path('password-reset-complete/', name='password_reset_complete'),
 
     path('users-cart/', views.UsersCartView.as_view(), name='users_cart'),
+
+
+    path('api/registration/', api_views.UserRegistrationAPIView.as_view(), name='registration'),
 ]
 
 
