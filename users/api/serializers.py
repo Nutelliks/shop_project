@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.password_validation import validate_password
+from django.contrib import auth
 
 from ..models import User 
 
@@ -11,7 +13,6 @@ class UserSerializer(ModelSerializer):
         model = User
         fields = ('id', 'username', 'email')
         read_only_fields = ('id', )
-
 
 
 class UserRegistrationSerializer(ModelSerializer):
@@ -35,9 +36,27 @@ class UserRegistrationSerializer(ModelSerializer):
         validated_data.pop('password2')
         user = User.objects.create_user(**validated_data)
         user.set_password(validated_data['password'])
+        user.save()
         return user
     
 
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
-        
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        data["user"] = UserSerializer(self.user).data
+        data["message"] = "Login successfully"
+
+        return data
     
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, attrs):
+        user = auth.authenticate(**attrs)
+        if user:
+            return user
+        return serializers.ValidationError("Invalid credentials")

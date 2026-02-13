@@ -23,6 +23,7 @@ urlpatterns = [
 
 
     path('api/registration/', api_views.UserRegistrationAPIView.as_view(), name='registration'),
+    path('api/token/', api_views.CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
 ]
 
 
