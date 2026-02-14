@@ -1,14 +1,14 @@
 from rest_framework import (
     viewsets, generics, permissions, 
-    response, status)
+    response, status, views)
 from rest_framework_simplejwt import (
-    views, tokens
+    views as jwt_views, tokens as jwt_tokens
 )
 
 from ..models import User
 from .serializers import (
     UserSerializer, UserRegistrationSerializer,
-    CustomTokenObtainPairSerializer,
+    CustomTokenObtainPairSerializer, LogoutSerializer
 )
 
 
@@ -28,7 +28,7 @@ class UserRegistrationAPIView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
 
-        refresh = tokens.RefreshToken.for_user(user)
+        refresh = jwt_tokens.RefreshToken.for_user(user)
 
         return response.Response({
             'user': UserSerializer(user).data,
@@ -38,5 +38,20 @@ class UserRegistrationAPIView(generics.CreateAPIView):
         }, status=status.HTTP_201_CREATED)
 
 
-class CustomTokenObtainPairView(views.TokenObtainPairView):
+class CustomTokenObtainPairView(jwt_views.TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+
+class LogoutAPIView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = LogoutSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return response.Response(
+            {"message": "Logout successfully"},
+            status=status.HTTP_200_OK
+            )

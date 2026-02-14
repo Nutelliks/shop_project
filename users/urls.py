@@ -4,6 +4,8 @@ from . import views
 from .api import views as api_views
 from .api.routers import router
 
+from rest_framework_simplejwt.views import TokenRefreshView
+
 
 app_name = 'users'
 urlpatterns = [
@@ -20,10 +22,10 @@ urlpatterns = [
     # path('password-reset-complete/', name='password_reset_complete'),
 
     path('users-cart/', views.UsersCartView.as_view(), name='users_cart'),
-
-
-    path('api/registration/', api_views.UserRegistrationAPIView.as_view(), name='registration'),
-    path('api/token/', api_views.CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/login/', api_views.CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/registration/', api_views.UserRegistrationAPIView.as_view(), name='api_registration'),
+    path('api/logout/', api_views.LogoutAPIView.as_view(), name='api_logout')
 ]
 
 
