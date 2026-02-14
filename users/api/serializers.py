@@ -64,6 +64,18 @@ class LoginSerializer(serializers.Serializer):
         return serializers.ValidationError("Invalid credentials")
 
 
+class UserProfileSerialier(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        fields = (
+            'id', 'email',
+            'first_name', 'last_name',
+            'username', 'image',
+        )
+        read_only_fields = ('id', 'email')
+
+
 class LogoutSerializer(serializers.Serializer):
     refresh = serializers.CharField()
 

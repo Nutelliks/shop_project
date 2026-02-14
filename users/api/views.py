@@ -8,7 +8,8 @@ from rest_framework_simplejwt import (
 from ..models import User
 from .serializers import (
     UserSerializer, UserRegistrationSerializer,
-    CustomTokenObtainPairSerializer, LogoutSerializer
+    CustomTokenObtainPairSerializer, 
+    UserProfileSerialier, LogoutSerializer
 )
 
 
@@ -40,6 +41,14 @@ class UserRegistrationAPIView(generics.CreateAPIView):
 
 class CustomTokenObtainPairView(jwt_views.TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+
+class UserProfileAPIView(generics.RetrieveUpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = UserProfileSerialier
+
+    def get_object(self):
+        return self.request.user
 
 
 class LogoutAPIView(views.APIView):

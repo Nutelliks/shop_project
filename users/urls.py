@@ -9,10 +9,10 @@ from rest_framework_simplejwt.views import TokenRefreshView
 
 app_name = 'users'
 urlpatterns = [
-    path('login/', views.UserLoginView.as_view(), name='login'),
-    path('registration/', views.UserRegistrationView.as_view(), name='registration'),
+    path('login/', views.UserLoginView.as_view(), name='login'),    # made
+    path('registration/', views.UserRegistrationView.as_view(), name='registration'),   # made
     path('profile/', views.UserProfileView.as_view(), name='profile'),
-    path('logout/', views.logout, name='logout'),
+    path('logout/', views.logout, name='logout'),   # made
 
     path('password-change/', views.UserPasswordChangeView.as_view(), name='password_change'),
     
@@ -25,7 +25,8 @@ urlpatterns = [
     path('api/login/', api_views.CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/registration/', api_views.UserRegistrationAPIView.as_view(), name='api_registration'),
-    path('api/logout/', api_views.LogoutAPIView.as_view(), name='api_logout')
+    path('api/profile/', api_views.UserProfileAPIView.as_view(), name='api_profile'),
+    path('api/logout/', api_views.LogoutAPIView.as_view(), name='api_logout'),
 ]
 
 
