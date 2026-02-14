@@ -73,7 +73,7 @@ class UserProfileSerialier(serializers.ModelSerializer):
             'first_name', 'last_name',
             'username', 'image',
         )
-        read_only_fields = ('id', 'email')
+        read_only_fields = ('id', 'email', )
 
 
 class LogoutSerializer(serializers.Serializer):
@@ -88,3 +88,16 @@ class LogoutSerializer(serializers.Serializer):
             RefreshToken(self.token).blacklist()
         except Exception as e:
             self.fail(e)
+
+
+class PasswordChangeSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True, validators=[validate_password, ])
+    new_password2 = serializers.CharField(required=True)
+
+
+    def validate(self, attrs):
+        if attrs["new_password"] != attrs["new_password2"]:
+            return serializers.ValidationError("Password fields didn't match")
+        return attrs
+    

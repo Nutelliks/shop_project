@@ -11,7 +11,7 @@ app_name = 'users'
 urlpatterns = [
     path('login/', views.UserLoginView.as_view(), name='login'),    # made
     path('registration/', views.UserRegistrationView.as_view(), name='registration'),   # made
-    path('profile/', views.UserProfileView.as_view(), name='profile'),
+    path('profile/', views.UserProfileView.as_view(), name='profile'),  # made
     path('logout/', views.logout, name='logout'),   # made
 
     path('password-change/', views.UserPasswordChangeView.as_view(), name='password_change'),
@@ -27,6 +27,7 @@ urlpatterns = [
     path('api/registration/', api_views.UserRegistrationAPIView.as_view(), name='api_registration'),
     path('api/profile/', api_views.UserProfileAPIView.as_view(), name='api_profile'),
     path('api/logout/', api_views.LogoutAPIView.as_view(), name='api_logout'),
+    path('api/password-change/', api_views.PasswordChangeAPIView.as_view(), name='password_change'),
 ]
 
 
