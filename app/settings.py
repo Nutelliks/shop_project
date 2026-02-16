@@ -233,6 +233,13 @@ SIMPLE_JWT = {
     "CHECK_REVOKE_TOKEN": False,
     "REVOKE_TOKEN_CLAIM": "hash_password",
     "CHECK_USER_IS_ACTIVE": True,
+
+    'AUTH_COOKIE': 'access_token',  # Имя cookie для access токена
+    'AUTH_COOKIE_REFRESH': 'refresh_token',  # Имя cookie для refresh токена
+    'AUTH_COOKIE_SECURE': False,  # True для HTTPS
+    'AUTH_COOKIE_HTTP_ONLY': True,  # Защита от XSS
+    'AUTH_COOKIE_PATH': '/',
+    'AUTH_COOKIE_SAMESITE': 'Lax',  # Защита от CSRF
 }
 
 
