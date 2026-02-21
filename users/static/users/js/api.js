@@ -84,4 +84,16 @@ class AuthAPI {
             return false;
         }
     }
+
+     // Регистрация
+    async register(userData) {
+        const response = await fetch(`${this.baseURL}/register/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userData)
+        });
+        return response;
+    }
 }
+
+const api = new AuthAPI();

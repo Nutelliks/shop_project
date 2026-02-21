@@ -11,7 +11,7 @@
             <div class="row justify-content-center">
                 <div class="col-md-9 bg-white p-4 mb-5 mx-2 rounded custom-shadow">
                     <h2 class="text-center mb-4">Регистрация</h2>
-                    <form action="{% url "user:registration" %}" method="post">
+                    <!-- {% comment %} <form action="{% url "user:registration" %}" method="post">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -89,11 +89,117 @@
                         </div>
                         <button type="submit"
                             class="btn btn-dark btn-block">Зарегистрироваться</button>
+                    </form> {% endcomment %} -->
+
+                    <form id="registerForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_first_name" class="form-label">Имя*</label>
+                                <input type="text" class="form-control" id="id_first_name"
+                                    name="first_name"
+                                    placeholder="Введите ваше имя" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_last_name" class="form-label">Фамилия*</label>
+                                <input type="text" class="form-control" id="id_last_name"
+                                    name="last_name"
+                                    placeholder="Введите вашу фамилию" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_username" class="form-label">Имя пользователя*</label>
+                                <input type="text" class="form-control" id="id_username"
+                                    name="username"
+                                    placeholder="Введите ваше имя пользователя" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_email" class="form-label">Email*</label>
+                                <input type="email" class="form-control" id="id_email"
+                                    name="email"
+                                    placeholder="Введите ваш email" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_password1" class="form-label">Пароль*</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="id_password1"
+                                        name="password1"
+                                        placeholder="Введите пароль" required>
+                                    <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#id_password1" aria-label="Показать/скрыть пароль">
+                                        <img src="{% static 'deps/icons/eye.svg' %}" class="icon-show" width="16" height="16" alt="Показать">
+                                        <img src="{% static 'deps/icons/eye-slash.svg' %}" class="icon-hide d-none" width="16" height="16" alt="Скрыть">
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_password2" class="form-label">Подтверждение пароля*</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="id_password2"
+                                        name="password2"
+                                        placeholder="Подтвердите пароль" required>
+                                    <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#id_password2" aria-label="Показать/скрыть пароль">
+                                        <img src="{% static 'deps/icons/eye.svg' %}" class="icon-show" width="16" height="16" alt="Показать">
+                                        <img src="{% static 'deps/icons/eye-slash.svg' %}" class="icon-hide d-none" width="16" height="16" alt="Скрыть">
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit"
+                            class="btn btn-dark btn-block">Зарегистрироваться</button>
                     </form>
+                    <div id="message"></div>
                 </div>
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block js %}    
+    <script src="{% static 'users/js/api.js' %}"></script> 
+    <script src="{% static 'users/js/show_password.js' %}"></script> 
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Собираем данные формы
+            const formData = new FormData(e.target);
+            const userData = {
+                username: formData.get('username'),
+                email: formData.get('email'),
+                password: formData.get('password1'),
+                password2: formData.get('password2'),
+                first_name: formData.get('first_name') || '',
+                last_name: formData.get('last_name') || ''
+            };
+            
+            // Отправляем запрос
+            const response = await api.register(userData);
+            const result = await response.json();
+            
+            const messageDiv = document.getElementById('message');
+            
+            if (response.ok) {
+                messageDiv.style.color = 'green';
+                messageDiv.innerHTML = 'Регистрация успешна! Перенаправление на страницу входа...';
+                
+                // Очищаем форму
+                e.target.reset();
+                
+                // Перенаправляем на страницу входа через 2 секунды
+                setTimeout(() => {
+                    window.location.href = '/user/login';
+                }, 2000);
+            } else {
+                messageDiv.style.color = 'red';
+                
+                // Форматируем ошибки для красивого отображения
+                let errorHtml = '<strong>Ошибка регистрации:</strong><ul>';
+                for (const [field, errors] of Object.entries(result)) {
+                    errorHtml += `<li>${field}: ${Array.isArray(errors) ? errors.join(', ') : errors}</li>`;
+                }
+                errorHtml += '</ul>';
+                messageDiv.innerHTML = errorHtml;
+            }
+        });
+    </script>
 {% endblock %}
 
 
