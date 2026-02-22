@@ -115,6 +115,19 @@ class AuthAPI {
         }
         return response;
     }
+
+    // Выход из системы (добавляем refresh токен в черный список)
+    async logout() {
+        const response = await this.request('/logout/', {
+            method: 'POST',
+            body: JSON.stringify({ refresh: this.refreshToken })
+        });
+
+        if (response.ok) {
+            this.clearTokens();
+        }
+        return response;
+    }
 }
 
 const api = new AuthAPI();

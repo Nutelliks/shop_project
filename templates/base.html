@@ -34,7 +34,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <ul id="navLinks" class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item dropdown ">
                             <a class="nav-link dropdown-toggle text-white" href="#" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -49,7 +49,7 @@
                         <li class="nav-item">
                             <a class="nav-link  text-white" href="{% url "user:users_cart" %}">Корзина</a>
                         </li>
-                        {% if not user.is_authenticated %}
+                        <!-- {% if not user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link  text-white" href="{% url "user:login" %}">Войти</a>
                         </li>
@@ -72,7 +72,7 @@
                                 <li><a class="dropdown-item  text-white" href="{% url "user:logout" %}">Выйти</a></li>
                             </ul>
                         </li>
-                        {% endif %}
+                        {% endif %} -->
                     </ul>
                     <form class="d-flex" role="search" action="{% url "catalog:search" %}" method="get">
                         <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
@@ -129,6 +129,52 @@
     <script src="{% static 'deps/js/jquery/jquery-3.7.0.min.js' %}"></script>
     <script src="{% static 'deps/js/jquery-ajax.js' %}"></script>
     <script src="{% static 'deps/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'users/js/api.js' %}"></script> 
+    <script>
+        // Обновляем навигацию в зависимости от статуса авторизации
+        function updateNavigation() {
+            const navLinks = document.getElementById('navLinks');
+            if (api.isAuthenticated()) {
+                navLinks.innerHTML += `
+                    <li class="nav-item dropdown ">
+                        <a class="nav-link dropdown-toggle text-white" href="#" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Мой профиль
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item text-white" href="{% url "user:users_cart" %}">Корзина</a></li>
+                            <li><a class="dropdown-item text-white" href="{% url "user:profile" %}">Личный кабинет</a>
+                            </li>
+                            {% if user.is_staff or user.is_admin %}
+                            <li><a class="dropdown-item  text-white" href="{% url "admin:index" %}">Админ панель</a></li>
+                            {% endif %}
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a id="logoutLink" class="dropdown-item text-white" href="#">Выйти</a></li>
+                        </ul>
+                    </li>
+                `;
+                
+                // Добавляем обработчик для выхода
+                document.getElementById('logoutLink').addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    await api.logout();
+                    window.location.href = '/user/login';
+                });
+            } else {
+                navLinks.innerHTML += `
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url "user:login" %}">Войти</a>
+                    </li>
+                `;
+            }
+        }
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            updateNavigation();
+        });
+    </script>
     {% block js %}
     
     {% endblock %}
