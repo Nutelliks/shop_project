@@ -51,17 +51,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         data["message"] = "Login successfully"
 
         return data
-    
-
-class LoginSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    password = serializers.CharField(write_only=True)
-
-    def validate(self, attrs):
-        user = auth.authenticate(**attrs)
-        if user:
-            return user
-        return serializers.ValidationError("Invalid credentials")
 
 
 class UserProfileSerialier(serializers.ModelSerializer):

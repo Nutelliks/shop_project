@@ -94,6 +94,27 @@ class AuthAPI {
         });
         return response;
     }
+
+    // Вход в систему
+    async login(credentials) {
+        const response = await fetch(`${this.baseURL}/login/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(credentials)
+        });
+
+        try {
+            const data = await response.json();
+            if (response.ok) {
+                this.setTokens(data.access, data.refresh);
+            }
+            // Сохраняем данные для использования в других частях кода
+            response.data = data;
+        } catch (e) {
+            response.data = {};
+        }
+        return response;
+    }
 }
 
 const api = new AuthAPI();
