@@ -1,10 +1,22 @@
 from django.db import models
 from django.urls import reverse
+from django.utils.text import slugify
 
 
 class Categories(models.Model):
-    name = models.CharField(max_length=150, unique=True, verbose_name='Name')
-    slug = models.SlugField(max_length=200, unique=True, blank=True, null=True, verbose_name='URL')
+    name = models.CharField(max_length=255, unique=True, verbose_name='Name')
+    slug = models.SlugField(max_length=255, unique=True, blank=True, null=True, verbose_name='URL')
+    parent = models.ForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name='children',
+        verbose_name='subCategory'
+    )
+    is_acive = models.BooleanField(default=True, verbose_name='Is_active')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Data created')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Data updated')
 
 
     class Meta:
@@ -15,6 +27,12 @@ class Categories(models.Model):
     
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
+
 
 
 class Products(models.Model):
