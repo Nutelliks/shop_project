@@ -19,5 +19,5 @@ class CategorySerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at', 'updated_at']
 
     def get_children(self, obj):
-        children_qs = Categories.objects.filter(is_active=True)
+        children_qs = obj.children.filter(is_active=True)
         return CategorySerializer(children_qs, many=True).data
