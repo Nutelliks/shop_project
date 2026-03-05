@@ -14,7 +14,7 @@ class Categories(models.Model):
         related_name='children',
         verbose_name='subCategory'
     )
-    is_acive = models.BooleanField(default=True, verbose_name='Is_active')
+    is_active = models.BooleanField(default=True, verbose_name='Is_active')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Data created')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Data updated')
 
@@ -27,7 +27,7 @@ class Categories(models.Model):
     
     def __str__(self):
         return self.name
-    
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
