@@ -1,54 +1,23 @@
 from rest_framework import serializers
-
-from goods.models import Categories, Products
-
-
-class CategoryInternalSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField()
-    slug  = serializers.SlugField()
-
+from ..models import Categories
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    children = serializers.SerializerMethodField()
 
     class Meta:
         model = Categories
-        fields = (
-            'id', 'name', 'slug',
-        )
-        read_only_fields = ('slug', )
-        
+        fields = [
+            "id",
+            "slug",
+            "parent",
+            "children",
+            "is_active",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
 
-
-class ProductSerializer(serializers.ModelSerializer):
-     category = CategoryInternalSerializer(read_only=True)
-
-
-     class Meta:
-        model = Products
-        fields = (
-            'id', 'name', 'slug', 'description',
-            'image', 'price', 'discount', 'quantity',
-            'category',
-        )
-        read_only_fields = ('slug', 'category', )
-
-         
-         
-
-
-# class CategorySerializer(serializers.Serializer):     # Simple serializer
-#     name = serializers.CharField(max_length=150)
-
-#     def to_internal_value(self, data):
-#         validated = super().to_internal_value(data)
-#         validated['test'] = 123
-#         return validated
-    
-
-#     def to_representation(self, instance):
-#         validated = super().to_representation(instance)
-#         ...
-#         return validated
-    
+    def get_children(self, obj):
+        children_qs = Categories.objects.filter(is_active=True)
+        return CategorySerializer(children_qs, many=True).data
