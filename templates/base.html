@@ -94,14 +94,18 @@
                         <img class="mx-1" src="{% static 'deps/icons/grid-fill.svg' %}" alt="Catalog Icon" width="16"
                             height="16">
                     </button>
-                    <ul class="dropdown-menu bg-dark" data-bs-theme="dark">
+                    <div id="categories-container">
+                        <!-- Здесь будет дерево категорий -->
+                    </div>
+        
+                    <!-- <ul id="categories-container" class="dropdown-menu bg-dark" data-bs-theme="dark">
                         {% cache 60 catalog_categories %}
                         {% tag_categories as categories %}
                         {% for category in categories %}
                         <li><a class="dropdown-item text-white" href="{% url "catalog:index" category.slug %}">{{ category.name }}</a></li>
                         {% endfor %}
                         {% endcache %}
-                    </ul>
+                    </ul> -->
                 </div>
 
                 <!-- Разметка модального окна корзины -->
@@ -129,7 +133,37 @@
     <script src="{% static 'deps/js/jquery/jquery-3.7.0.min.js' %}"></script>
     <script src="{% static 'deps/js/jquery-ajax.js' %}"></script>
     <script src="{% static 'deps/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'deps/js/show_password.js' %}"></script> 
+    <script src="{% static 'deps/js/show_password.js' %}"></script>
+    <script>
+        // Функция для рекурсивного построения HTML дерева категорий
+        function renderCategories(categories) {
+            if (!categories || categories.length === 0) return '';
+
+            let html = '<ul class="dropdown-menu bg-dark" data-bs-theme="dark">';
+            categories.forEach(cat => {
+                const catalogUrl = "{% url 'catalog:index' 'slug-placeholder' %}".replace('slug-placeholder/', '');
+                html += `<li><a class="dropdown-item text-white" href="${catalogUrl}${cat.slug}">${ cat.name }</a>`;
+                if (cat.children && cat.children.length > 0) {
+                    html += renderCategories(cat.children);
+                }
+                html += '</li>';
+            });
+            html += '</ul>';
+            return html;
+        }
+
+        // Загружаем данные с API
+        fetch('/catalog/api/categories/')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('categories-container');
+                container.innerHTML = renderCategories(data);
+            })
+            .catch(error => {
+                console.error('Ошибка загрузки категорий:', error);
+                document.getElementById('categories-container').innerHTML = '<p>Ошибка загрузки данных.</p>';
+            });
+    </script> 
 </body>
 
 </html>
